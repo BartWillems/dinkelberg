@@ -9,7 +9,7 @@ pub enum Command {
     #[command(description = "display this text.")]
     Help,
     #[command(description = "Fetch an image")]
-    Image(String),
+    Img(String),
     #[command(description = "Fetch more images")]
     More,
 }
@@ -21,7 +21,7 @@ pub(crate) async fn responder(
 ) -> anyhow::Result<(), anyhow::Error> {
     match command {
         Command::Help => cx.answer(Command::descriptions()).send().await?,
-        Command::Image(query) => img::image(&cx, &query).await?,
+        Command::Img(query) => img::image(&cx, &query).await?,
         Command::More => img::more(&cx).await?,
     };
 
