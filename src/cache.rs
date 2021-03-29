@@ -218,18 +218,7 @@ impl Cache {
             cmd("GET").arg(&cache_key).query_async(&mut conn).await;
 
         match res {
-            Ok(res) => {
-                let cache_hit = serde_json::from_slice::<T>(&res).ok();
-
-                if cache_hit.is_some() {
-                    Stats::cache_hit();
-                    debug!("found {} in cache", &cache_key);
-                } else {
-                    Stats::cache_miss();
-                }
-
-                cache_hit
-            }
+            Ok(res) => serde_json::from_slice::<T>(&res).ok(),
             Err(err) => {
                 error!("unable to fetch {} from cache: {}", &cache_key, err);
                 None
