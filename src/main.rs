@@ -55,5 +55,7 @@ async fn main() {
 
     let bot = Bot::from_env().auto_send();
 
+    info!("Ready to start listening for messages");
+
     teloxide::commands_repl(bot, Config::bot_name(), responder).await;
 }

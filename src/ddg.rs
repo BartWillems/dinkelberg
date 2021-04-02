@@ -22,7 +22,7 @@ impl Client {
 
     /// fetch and set the duckduckgo request token
     /// This token is only valid for a specific request for a (currently unkown) amount of time
-    #[tracing::instrument]
+    #[tracing::instrument(name = "ddg::acquire_token")]
     async fn acquire_token(&mut self, query: &str) -> Result<&Client, DuckDuckGoError> {
         let resp = self
             .reqwest
@@ -58,7 +58,7 @@ impl Client {
             .map(|token| token.to_string())
     }
 
-    #[tracing::instrument]
+    #[tracing::instrument(name = "ddg::search_images")]
     pub async fn search_images(query: &str) -> Result<ImageResponse, DuckDuckGoError> {
         if let Some(res) = Cache::get(query).await {
             return Ok(res);

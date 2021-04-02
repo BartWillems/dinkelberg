@@ -50,6 +50,12 @@ pub struct CacheStatus {
     healthy: bool,
 }
 
+impl CacheStatus {
+    pub(crate) fn is_healthy(&self) -> bool {
+        self.healthy
+    }
+}
+
 lazy_static! {
     static ref CACHE_POOL: RwLock<Cache> = RwLock::new(Cache::new());
 }
@@ -241,12 +247,14 @@ impl Cache {
         }
     }
 
+    #[allow(dead_code)]
     pub(crate) async fn disable_cache() {
         let mut cache = CACHE_POOL.write().await;
 
         cache.pool = None;
     }
 
+    #[allow(dead_code)]
     pub(crate) async fn enable_cache() {
         let mut cache = CACHE_POOL.write().await;
 
