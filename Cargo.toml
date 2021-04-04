@@ -30,11 +30,11 @@ tracing = { version = "0.1", features = ["log", "log-always"] }
 tracing-attributes = "0.1"
 tracing-futures = "0.2"
 tracing-subscriber = "0.2"
-tracing-opentelemetry = "0.11"
+tracing-opentelemetry = "0.12"
 
 # Opentelemetry
-opentelemetry = { version = "0.12", default-features = false, features = ["trace"] }
-opentelemetry-jaeger = "0.11"
+opentelemetry = { version = "0.13", default-features = false, features = ["trace"] }
+opentelemetry-jaeger = "0.12"
 
 # Serde
 serde = { version = "1.0" }

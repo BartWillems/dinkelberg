@@ -33,10 +33,10 @@ async fn main() {
         std::process::exit(0);
     }
 
-    let (tracer, _uninstall) = opentelemetry_jaeger::new_pipeline()
+    let tracer = opentelemetry_jaeger::new_pipeline()
         .with_service_name(Config::bot_name())
         .with_agent_endpoint(Config::opentelemetry_endpoint())
-        .install()
+        .install_simple()
         .expect("unable to connect to opentelemetry agent");
 
     // Create a tracing layer with the configured tracer
