@@ -17,6 +17,8 @@ pub enum Command {
     More,
     #[command(description = "Get the bot's health status")]
     Health,
+    #[command(description = " A place that is real and exists")]
+    Bodegem,
 }
 
 #[tracing::instrument(skip(cx))]
@@ -30,6 +32,7 @@ pub(crate) async fn responder(
         Command::Img(query) => img::image(&cx, &query).await?,
         Command::More => img::more(&cx).await?,
         Command::Health => health::status(&cx).await?,
+        Command::Bodegem => cx.answer_location(50.8614773, 4.211304).await?,
     };
 
     Ok(())
