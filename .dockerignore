@@ -1,0 +1,4 @@
+target
+.env
+docker-compose.yml
+README.md

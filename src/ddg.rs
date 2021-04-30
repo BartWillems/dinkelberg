@@ -100,8 +100,12 @@ pub struct ImageResponse {
 
 impl ImageResponse {
     pub fn random(&self) -> Option<&Image> {
-        let mut rng = rand::thread_rng();
-        self.results.choose(&mut rng)
+        self.results.choose(&mut rand::thread_rng())
+    }
+
+    #[allow(dead_code)]
+    pub fn first(&self) -> Option<&Image> {
+        self.results.first()
     }
 }
 

@@ -1,0 +1,14 @@
+name: Rust
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Build
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
