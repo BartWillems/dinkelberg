@@ -22,6 +22,10 @@ mod ddg;
 use commands::{responder, Command};
 use config::Config;
 
+lazy_static! {
+    pub static ref BOT: AutoSend<teloxide::Bot> = Bot::from_env().auto_send();
+}
+
 #[tokio::main]
 async fn main() {
     dotenv::dotenv().ok();
@@ -52,10 +56,8 @@ async fn main() {
     cache::Cache::init();
 
     info!("Starting bot...");
-
-    let bot = Bot::from_env().auto_send();
+    lazy_static::initialize(&BOT);
 
     info!("Ready to start listening for messages");
-
-    teloxide::commands_repl(bot, Config::bot_name(), responder).await;
+    teloxide::commands_repl(BOT.clone(), Config::bot_name(), responder).await;
 }

@@ -18,10 +18,7 @@ impl Config {
     }
 
     pub fn redis_url() -> Option<&'static str> {
-        match &CONFIG.redis_url {
-            Some(url) => Some(url.as_ref()),
-            None => None,
-        }
+        CONFIG.redis_url.as_ref().map(|url| url.as_ref())
     }
 
     pub fn opentelemetry_endpoint() -> &'static str {
