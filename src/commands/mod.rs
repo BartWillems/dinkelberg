@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use teloxide::prelude::*;
 use teloxide::utils::command::BotCommand;
 
@@ -48,7 +50,7 @@ pub(crate) async fn responder(
             let _ = cx.answer_location(50.8614773, 4.211304).await?;
         }
         Command::RemindMe(query) => {
-            let _ = reminders::remind_me(&cx, query).await?;
+            let _ = reminders::remind_me(Arc::new(cx), query).await?;
         }
     }
 
