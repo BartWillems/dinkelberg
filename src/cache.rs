@@ -1,7 +1,7 @@
 use std::fmt::{Debug, Display};
 use std::sync::atomic::{AtomicUsize, Ordering};
 
-use deadpool_redis::{cmd, Connection, Pool};
+use deadpool_redis::{redis::cmd, ConnectionWrapper, Pool};
 use redis::RedisError;
 use serde::de::DeserializeOwned;
 use serde::Serialize;
@@ -109,7 +109,7 @@ impl Cache {
     }
 
     #[tracing::instrument]
-    async fn connection() -> Option<Connection> {
+    async fn connection() -> Option<ConnectionWrapper> {
         let cache = CACHE_POOL.read().await;
 
         match cache.pool.as_ref()?.get().await {
@@ -174,7 +174,7 @@ impl Cache {
             .arg(cache_key)
             .arg(ttl)
             .arg(object_string)
-            .execute_async(&mut conn)
+            .query_async::<_, ()>(&mut conn)
             .await;
 
         if let Err(err) = res {
@@ -207,7 +207,7 @@ impl Cache {
         let res = cmd("SET")
             .arg(cache_key)
             .arg(object_string)
-            .execute_async(&mut conn)
+            .query_async::<_, ()>(&mut conn)
             .await;
 
         if let Err(err) = res {
@@ -240,7 +240,10 @@ impl Cache {
             None => return,
         };
 
-        let res = cmd("DEL").arg(&cache_key).execute_async(&mut conn).await;
+        let res = cmd("DEL")
+            .arg(&cache_key)
+            .query_async::<_, ()>(&mut conn)
+            .await;
 
         if let Err(err) = res {
             error!("unable to delete object from cache: {}", err);

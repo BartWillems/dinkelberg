@@ -103,7 +103,6 @@ impl ImageResponse {
         self.results.choose(&mut rand::thread_rng())
     }
 
-    #[allow(dead_code)]
     pub fn first(&self) -> Option<&Image> {
         self.results.first()
     }

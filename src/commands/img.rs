@@ -18,7 +18,7 @@ pub(crate) async fn image(cx: &Context, query: &str) -> anyhow::Result<Message, 
 
     Cache::set_scoped(&images, cx.chat_id()).await;
 
-    let message: Message = match images.random() {
+    let message: Message = match images.first() {
         Some(image) => cx.answer_photo(InputFile::url(image.image_url())).await?,
         None => cx.answer("No image found").await?,
     };
