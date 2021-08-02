@@ -14,7 +14,7 @@ pub(crate) async fn image(cx: &Context, query: &str) -> anyhow::Result<Message, 
             .map_err(|e| e.into());
     }
 
-    let images = ddg::Client::search_images(&query).await?;
+    let images = ddg::Client::search_images(query).await?;
 
     Cache::set_scoped(&images, cx.chat_id()).await;
 
