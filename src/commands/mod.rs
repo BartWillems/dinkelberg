@@ -6,6 +6,7 @@ use teloxide::utils::command::BotCommand;
 mod health;
 mod img;
 mod reminders;
+mod what;
 
 pub(crate) type Context = UpdateWithCx<AutoSend<Bot>, Message>;
 
@@ -24,6 +25,8 @@ pub enum Command {
     Bodegem,
     #[command(description = "Remind me in a given time")]
     RemindMe(String),
+    #[command(description = "Lookup what something is")]
+    What(String),
 }
 
 #[tracing::instrument(skip(cx))]
@@ -35,22 +38,25 @@ pub(crate) async fn responder(
     debug!("Group ID: {}", cx.chat_id());
     match command {
         Command::Help => {
-            let _ = cx.answer(Command::descriptions()).send().await?;
+            cx.answer(Command::descriptions()).send().await?;
         }
         Command::Img(query) => {
-            let _ = img::image(&cx, &query).await?;
+            img::image(&cx, &query).await?;
         }
         Command::More => {
-            let _ = img::more(&cx).await?;
+            img::more(&cx).await?;
         }
         Command::Health => {
-            let _ = health::status(&cx).await?;
+            health::status(&cx).await?;
         }
         Command::Bodegem => {
-            let _ = cx.answer_location(50.8614773, 4.211304).await?;
+            cx.answer_location(50.8614773, 4.211304).await?;
         }
         Command::RemindMe(query) => {
-            let _ = reminders::remind_me(Arc::new(cx), query).await?;
+            reminders::remind_me(Arc::new(cx), query).await?;
+        }
+        Command::What(query) => {
+            what::what(&cx, &query).await?;
         }
     }
 

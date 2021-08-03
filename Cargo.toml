@@ -45,12 +45,9 @@ serde_json = "1.0"
 # Bot stuff
 teloxide = { version = "0.5", features = ["macros", "auto-send"]}
 
-# Command r equirements
+# Command requirements
 # RemindMe
 date_time_parser = "0.1.0"
-
-# futures = "0.3"
-# futures-util = "0.3"
 
 [profile.release]
 lto = "thin"

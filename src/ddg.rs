@@ -5,6 +5,7 @@ use rand::seq::SliceRandom;
 use regex::Regex;
 
 const BASE_URI: &str = "https://duckduckgo.com";
+const BASE_API_URI: &str = "https://api.duckduckgo.com";
 
 #[derive(Debug)]
 pub struct Client {
@@ -16,7 +17,7 @@ impl Client {
     fn new() -> Self {
         Client {
             token: None,
-            reqwest: reqwest::Client::new(),
+            reqwest: crate::HTTP_CLIENT.clone(),
         }
     }
 
@@ -90,6 +91,34 @@ impl Client {
 
         Ok(res)
     }
+
+    #[tracing::instrument(name = "ddg::wiki_lookup")]
+    pub async fn wiki_lookup(query: &str) -> Result<WikiResponse, DuckDuckGoError> {
+        if let Some(res) = Cache::get(query).await {
+            return Ok(res);
+        }
+
+        let res = crate::HTTP_CLIENT
+            .get(BASE_API_URI)
+            .query(&[
+                ("q", query),
+                ("format", "json"),
+                ("no_html", "1"),
+                ("skip_disambig", "1"),
+            ])
+            .send()
+            .await?
+            .json::<WikiResponse>()
+            .await?;
+
+        if res.abstract_text.is_empty() {
+            return Err(DuckDuckGoError::EmptyResponse);
+        }
+
+        Cache::setex(&res, query).await;
+
+        Ok(res)
+    }
 }
 
 #[derive(Serialize, Deserialize)]
@@ -131,12 +160,26 @@ impl Image {
     }
 }
 
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "PascalCase")]
+pub struct WikiResponse {
+    abstract_text: String,
+}
+
+impl From<WikiResponse> for String {
+    fn from(res: WikiResponse) -> String {
+        res.abstract_text
+    }
+}
+
 #[derive(Debug, Display)]
 pub enum DuckDuckGoError {
     #[display(fmt = "DDG API token not found in response")]
     TokenNotFound,
     #[display(fmt = "Unexpected DDG server error")]
     ServerError,
+    #[display(fmt = "DDG responded with an empty answer")]
+    EmptyResponse,
 }
 
 impl From<reqwest::Error> for DuckDuckGoError {

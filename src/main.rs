@@ -24,6 +24,7 @@ use config::Config;
 
 lazy_static! {
     pub static ref BOT: AutoSend<teloxide::Bot> = Bot::from_env().auto_send();
+    static ref HTTP_CLIENT: reqwest::Client = reqwest::Client::new();
 }
 
 #[tokio::main]

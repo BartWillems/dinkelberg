@@ -9,7 +9,7 @@ use crate::ddg::ImageResponse;
 pub(crate) async fn image(cx: &Context, query: &str) -> anyhow::Result<Message, anyhow::Error> {
     if query.is_empty() {
         return cx
-            .answer("Please provide an image query")
+            .reply_to("Please provide an image query")
             .await
             .map_err(|e| e.into());
     }
@@ -19,8 +19,8 @@ pub(crate) async fn image(cx: &Context, query: &str) -> anyhow::Result<Message, 
     Cache::set_scoped(&images, cx.chat_id()).await;
 
     let message: Message = match images.first() {
-        Some(image) => cx.answer_photo(InputFile::url(image.image_url())).await?,
-        None => cx.answer("No image found").await?,
+        Some(image) => cx.reply_photo(InputFile::url(image.image_url())).await?,
+        None => cx.reply_to("No image found").await?,
     };
 
     Ok(message)
@@ -31,13 +31,13 @@ pub(crate) async fn more(cx: &Context) -> anyhow::Result<Message, RequestError> 
     let images: ImageResponse = match Cache::get_scoped(cx.chat_id()).await {
         Some(res) => res,
         None => {
-            return cx.answer("You have to fetch images first").await;
+            return cx.reply_to("You have to fetch images first").await;
         }
     };
 
     let message: Message = match images.random() {
-        Some(image) => cx.answer_photo(InputFile::url(image.image_url())).await?,
-        None => cx.answer("No image found").await?,
+        Some(image) => cx.reply_photo(InputFile::url(image.image_url())).await?,
+        None => cx.reply_to("No image found").await?,
     };
 
     Ok(message)

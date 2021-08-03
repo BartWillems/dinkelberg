@@ -80,10 +80,10 @@ impl Cache {
             }
         };
 
-        let cfg = deadpool_redis::Config {
-            url: Some(redis_url.to_owned()),
-            ..Default::default()
-        };
+        let mut cfg = deadpool_redis::Config::default();
+        cfg.url = Some(redis_url.to_owned());
+        // Should be removed in a PR...
+        cfg.connection = None;
 
         match cfg.create_pool() {
             Ok(pool) => {

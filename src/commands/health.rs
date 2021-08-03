@@ -14,5 +14,5 @@ pub(crate) async fn status(cx: &Context) -> anyhow::Result<Message, RequestError
         resp = String::from("Cache: unhealthy");
     }
 
-    cx.answer(resp).await
+    cx.reply_to(resp).await
 }
