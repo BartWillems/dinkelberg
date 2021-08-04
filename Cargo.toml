@@ -48,6 +48,8 @@ teloxide = { version = "0.5", features = ["macros", "auto-send"]}
 # Command requirements
 # RemindMe
 date_time_parser = "0.1.0"
+# Roll
+num_enum = "0.5"
 
 [profile.release]
 lto = "thin"

@@ -11,3 +11,4 @@ A Telegram bot written in Rust
 - /bodegem - A place that is real and exists
 - /remindme - Remind me in a given time
 - /what - Lookup what something is
+- /roll - Praise Kek

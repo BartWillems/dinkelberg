@@ -6,6 +6,7 @@ use teloxide::utils::command::BotCommand;
 mod health;
 mod img;
 mod reminders;
+mod roll;
 mod what;
 
 pub(crate) type Context = UpdateWithCx<AutoSend<Bot>, Message>;
@@ -27,6 +28,8 @@ pub enum Command {
     RemindMe(String),
     #[command(description = "Lookup what something is")]
     What(String),
+    #[command(description = "Praise Kek")]
+    Roll,
 }
 
 #[tracing::instrument(skip(cx))]
@@ -34,8 +37,11 @@ pub(crate) async fn responder(
     cx: UpdateWithCx<AutoSend<Bot>, Message>,
     command: Command,
 ) -> anyhow::Result<(), anyhow::Error> {
-    debug!("Incomming command: {:?}", command);
-    debug!("Group ID: {}", cx.chat_id());
+    debug!(
+        "Incomming command: `{:?}`, Group ID: `{}`",
+        command,
+        cx.chat_id()
+    );
     match command {
         Command::Help => {
             cx.answer(Command::descriptions()).send().await?;
@@ -57,6 +63,9 @@ pub(crate) async fn responder(
         }
         Command::What(query) => {
             what::what(&cx, &query).await?;
+        }
+        Command::Roll => {
+            roll::roll(&cx).await?;
         }
     }
 
