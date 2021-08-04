@@ -31,9 +31,9 @@ enum Outcome {
     Nino = 9,
 }
 
-fn random_number() -> i64 {
+fn random_number() -> i32 {
     let mut rng = rand::thread_rng();
-    rng.gen_range(1000000000..9999999999)
+    rng.gen_range(100000000..999999999)
 }
 
 #[tracing::instrument(name = "commands::roll", skip(cx))]
