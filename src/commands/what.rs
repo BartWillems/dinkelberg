@@ -12,7 +12,10 @@ pub(crate) async fn what(cx: &Context, query: &str) -> anyhow::Result<Message, E
             if matches!(err, DuckDuckGoError::EmptyResponse) {
                 cx.reply_to("I don't know 🤔").await.map_err(|e| e.into())
             } else {
-                Err(err).map_err(|e| e.into())
+                log::error!("DuckDuckGo error: {}", err);
+                cx.reply_to("Something went wrong...")
+                    .await
+                    .map_err(|e| e.into())
             }
         }
     }
