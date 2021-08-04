@@ -12,3 +12,8 @@ jobs:
         uses: actions-rs/cargo@v1
         with:
           command: build
+
+      - name: Clippy
+        uses: actions-rs/cargo@v1
+        with:
+          command: clippy
